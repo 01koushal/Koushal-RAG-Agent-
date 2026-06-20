@@ -1,10 +1,12 @@
-flask==3.1.0
-flask-cors==6.0.0
-python-dotenv==1.0.1
-numpy<2.0
-faiss-cpu==1.8.0
-openai==1.35.0
-gunicorn==22.0.0
+flask
+flask-cors
+python-dotenv
+
+numpy==1.26.4
+faiss-cpu==1.14.3
+
+openai
+gunicorn
 
 torch==2.2.2
 sentence-transformers==2.7.0
