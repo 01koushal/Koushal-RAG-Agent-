@@ -1,0 +1,8 @@
+flask
+flask-cors
+python-dotenv
+numpy
+faiss-cpu
+sentence-transformers
+openai
+gunicorn

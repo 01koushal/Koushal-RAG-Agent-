@@ -1,0 +1,7 @@
+requirements.txt
+.env
+venv/
+document.txt
+documentfinal.txt
+doument_embeddings.txt
+__pycache__/
