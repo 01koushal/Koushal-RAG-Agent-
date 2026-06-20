@@ -1,8 +1,8 @@
 flask
 flask-cors
 python-dotenv
-numpy
-faiss-cpu
-sentence-transformers
+numpy>=1.24.0
+faiss-cpu==1.11.0
+sentence-transformers>=3.0.0
 openai
 gunicorn
