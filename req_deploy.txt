@@ -2,11 +2,10 @@ flask
 flask-cors
 python-dotenv
 
-numpy==1.26.4
+numpy
 faiss-cpu==1.14.3
 
 openai
 gunicorn
 
-torch==2.2.2
-sentence-transformers==2.7.0
+sentence-transformers
