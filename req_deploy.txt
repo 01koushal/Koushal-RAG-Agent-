@@ -8,4 +8,4 @@ faiss-cpu==1.14.3
 openai
 gunicorn
 
-sentence-transformers
+google-genai

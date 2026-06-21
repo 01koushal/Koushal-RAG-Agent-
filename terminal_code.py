@@ -4,19 +4,27 @@ import sys
 import faiss
 import os
 import pickle
-from sentence_transformers import SentenceTransformer
+#from sentence_transformers import SentenceTransformer
 from openai import OpenAI
+from google import genai
 
 # LOAD API KEY
 load_dotenv()
 api_key = os.getenv("GROQ_API_KEY")
+gemini_key = os.getenv("GEMINI_API_KEY")
+gemini_client = genai.Client(
+    api_key=gemini_key
+)
 
 if not api_key:
     print("ERROR: GROQ_API_KEY not found in .env file.")
     sys.exit(1)
+if not gemini_key:
+    print("ERROR: GEMINI_API_KEY not found in .env file.")
+    sys.exit(1)
 
 # Load embedding model
-embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+#embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 # Groq client
 client = OpenAI(
@@ -31,8 +39,16 @@ with open("chunks.pkl", "rb") as f:
 
 # 🔍 SEARCH FUNCTION (Retriever)
 def search(query):
-    query_embedding = embedding_model.encode([query])
-    query_embedding = np.array(query_embedding, dtype=np.float32)
+    response = gemini_client.models.embed_content(
+        model="gemini-embedding-2",
+        contents=query
+    )
+    query_embedding = np.array(
+    [response.embeddings[0].values],
+    dtype=np.float32
+)
+
+
     faiss.normalize_L2(query_embedding)
 
     top_n = 4

@@ -3,14 +3,22 @@
 import pickle
 import numpy as np                       
 import faiss                              # FAISS: Facebook AI Similarity Search — production vector search.
-from sentence_transformers import SentenceTransformer  # Converts text into semantic embeddings.      
-              
+#from sentence_transformers import SentenceTransformer  # Converts text into semantic embeddings.      
+from google import genai
+from dotenv import load_dotenv
+import os   
+load_dotenv()
+
+gemini_key = os.getenv("GEMINI_API_KEY")
+gemini_client = genai.Client(
+    api_key=gemini_key
+)
 
 
 
 
 
-doc_path = "documents.txt"  # Path to the text file containing documents to index.
+doc_path = "document.txt"  # Path to the text file containing documents to index.
 print(f"Loading documents from {doc_path}...")
 
 with open(doc_path,"r") as f:
@@ -44,7 +52,22 @@ print(f"Split into {len(chunks)} chunks.")
 
 print("\nLoading embedding model (first run downloads ~30MB model)...")
 
-embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+chunk_embeddings = []
+
+for chunk in chunks:
+    response = gemini_client.models.embed_content(
+        model="gemini-embedding-2",
+        contents=chunk
+    )
+
+    chunk_embeddings.append(
+        response.embeddings[0].values
+    )
+
+chunk_embeddings = np.array(
+    chunk_embeddings,
+    dtype=np.float32
+)
 # "all-MiniLM-L6-v2" is a popular, lightweight embedding model.
 # It produces 384-dimensional vectors and runs fast even on CPU.
 # On first run, it downloads ~30MB. After that, it uses the cached version.
@@ -54,7 +77,7 @@ embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 print("Creating embeddings for document chunks...")
 
-chunk_embeddings = embedding_model.encode(chunks, show_progress_bar=True)
+# chunk_embeddings = embedding_model.encode(chunks, show_progress_bar=True)
 # .encode() converts each chunk text into a 384-dimensional vector.
 # show_progress_bar=True shows a progress bar as it processes.
 # The result is a NumPy array of shape (num_chunks, 384).
